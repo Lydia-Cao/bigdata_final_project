@@ -1,0 +1,41 @@
+---
+title: "BD-Final Project-EDA"
+output: html_document
+date: "2023-05-11"
+---
+```{r}
+library(dplyr)
+library(tidyverse)
+library(ggplot2)
+```
+
+```{r}
+
+fraud_data <- read.csv('/Users/yilingwu/Desktop/newdata.csv')
+
+#check NAs
+sapply(fraud_data, function(x) sum(is.na(x)))
+
+#check the data type of each variable
+str(fraud_data)
+
+#turn numeric variables with less than 9 unique values into categorical variables 
+unique.per.column <- sapply(select_if(fraud_data, is.numeric), n_distinct)
+column.names.to.factor <- names(unique.per.column)[unique.per.column < 9]
+fraud_data <- mutate_at(fraud_data, column.names.to.factor, as.factor)
+
+str(fraud_data)
+
+summary(fraud_data)
+```
+
+correlation
+```{r}
+numeric_vars <- sapply(fraud_data, is.numeric)
+fraud_data.num <- fraud_data[, numeric_vars]
+cor_matrix <- cor(fraud_data.num)
+cor_matrix
+
+sum(fraud_data$device_distinct_emails == -1)
+```
+
